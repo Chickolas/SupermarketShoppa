@@ -18,9 +18,9 @@ def Connect_db():
             database = "Shopper",
             use_pure=True,
         )
-        print("✅ Connection Successful!")
+        print("Connection Successful!")
     except mysql.connector.Error as err:
-        print("❌ Connection Failed:", err)
+        print("Connection Failed:", err)
     return db
 
 class Product():
