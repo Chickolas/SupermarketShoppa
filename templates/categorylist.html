@@ -19,8 +19,8 @@
         {% for category in categories %}
         <tr id="row_{{ loop.index }}">
             <td>{{ category.getCategoryName() }}</td>
-            <td>{{ category.getTescoURL() }}</td>
-            <td>{{ category.getSainsburyURL() }}</td>
+            <td>{{ category.getSupermarket() }}</td>
+            <td>{{ category.getURL() }}</td>
             <td><button onclick="editRow('{{ loop.index }}')">Edit</button></td>
         </tr>
         {% endfor %}

@@ -1,0 +1,77 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.navigation {
+    margin-bottom: 20px;
+}
+.navigation a {
+    margin-right: 10px;
+    text-decoration: none;
+    color: #333;
+}
+.button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+th {
+    background-color: #f2f2f2;
+}
+.quantity-form {
+    display: flex;
+    align-items: center;
+}
+.quantity-form label {
+    margin-right: 10px;
+}
+.quantity-form input[type="number"] {
+    width: 60px;
+    margin-right: 10px;
+}
+.quantity-form .button {
+    flex-shrink: 0;
+}
+.basket-summary {
+        position: fixed;
+        width: 200px;
+        height: 200px;
+        top: 25%; /* Adjust top position */
+        right: 50px; /* Adjust right position */
+        transform: translateY(-50%); /* Center vertically */
+        background-color: #f9f9f9;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 999; /* Ensure it's above other content */
+}
+.basket-summary p {
+    margin: 5px 0;
+}
+.checkout-button {
+        position: absolute; /* Position button absolutely */
+        bottom: 20px; /* 20px from bottom */
+        right: 10px; /* 20px from right */
+}

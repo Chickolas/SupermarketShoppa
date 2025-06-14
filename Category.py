@@ -7,36 +7,43 @@ from decimal import Decimal, ROUND_HALF_UP
 from datetime import date
 
 class Category():
-    def __init__(self, CategoryName, TescoURL, SainsburyURL):
+    def __init__(self, CategoryID, CategoryName, Supermarket, URL):
+        self.__CategoryID = CategoryID
         self.__CategoryName = CategoryName
-        self.__TescoURL = TescoURL
-        self.__SainsburyURL = SainsburyURL
+        self.__Supermarket = Supermarket
+        self.__URL = URL
 
     #Getters and setters
+    def setCategoryID(self, CategoryID):
+        self.__CategoryID = CategoryID
+
     def setCategoryName(self, CategoryName):
         self.__CategoryName = CategoryName
 
-    def setTescoURL(self, TescoURL):
-        self.__TescoURL = TescoURL
+    def setSupermarket(self, Supermarket):
+        self.__Supermarket = Supermarket
 
-    def setSainsburyURL(self, SainsburyURL):
-        self.__SainsburyURL = SainsburyURL
+    def setURL(self, URL):
+        self.__URL = URL
+
+    def getCategoryID(self):
+        return self.__CategoryID
 
     def getCategoryName(self):
         return self.__CategoryName
 
-    def getTescoURL(self):
-        return self.__TescoURL
-    
-    def getSainsburyURL(self):
-        return self.__SainsburyURL
-    
+    def getSupermarket(self):
+        return self.__Supermarket
+
+    def getURL(self):
+        return self.__URL
+
     #Creation and update of category in the database based from object attributes
     def CreateCategory(self):
         db = Connect_db()
         connection = db.cursor(buffered=True)
-        Query = "INSERT INTO Category(CategoryName, TescoURL, SainsburyURL) VALUES (%s, %s, %s)"
-        Values = (self.__CategoryName, self.__TescoURL, self.__SainsburyURL)
+        Query = "INSERT INTO Category(CategoryName, Supermarket, URL) VALUES (%s, %s, %s)"
+        Values = (self.__CategoryName, self.__Supermarket, self.__URL)
         connection.execute(Query, Values)
         db.commit()
         connection.close()
@@ -44,14 +51,16 @@ class Category():
     def UpdateCategory(self):
         db = Connect_db()
         connection = db.cursor(buffered=True)
-        Query = "Update Category SET TescoURL = %s, SainsburyURL = %s WHERE CategoryName = %s"
-        values = (self.getTescoURL(), self.getSainsburyURL(), self.getCategoryName())
+        Query = "Update Category SET Supermarket = %s, URL = %s WHERE CategoryID = %s"
+        values = (self.getSupermarket(), self.getURL(), self.getCategoryID())
         connection.execute(Query, values)
         db.commit()
         connection.close()
 
     #Scraping algorithm
     def ScrapeTesco(self):
+        # print(self.__CategoryID, self.__CategoryName, self.__Supermarket, self.__URL)
+
         # Compile regex for the tesco price strings - Allows only the numbers to be gotten 
         price_regex = re.compile(".*beans-price__text$")
         ppi_regex = re.compile(".*beans-price__subtext$")
@@ -64,7 +73,7 @@ class Category():
         driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
         #driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Linux; Android 11; SAMSUNG SM-G973U) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/14.2 Chrome/87.0.4280.141 Mobile Safari/537.36'})
         sleep(1)
-        driver.get(self.getTescoURL())
+        driver.get(self.getURL())
         
 
         sleep(1) # Let the page load
@@ -87,7 +96,7 @@ class Category():
             driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Linux; Android 11; SAMSUNG SM-G973U) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/14.2 Chrome/87.0.4280.141 Mobile Safari/537.36'})
             #Simulates the use of the websites from another device to maske the scraping as a person by overriding the default User agent string to a custom one
             
-            driver.get(self.getTescoURL() + "?page=" + str(i))
+            driver.get(self.getURL() + "?page=" + str(i))
             
             sleep(5) # Let the page load fully before trying to grab information
 
@@ -138,7 +147,7 @@ class Category():
 
                     #Offer is attempted to be gotten from the item, If one doesnt exist an exception is raised
                     offer = product.find("span", class_ = "offer-text").get_text()
-                    item = Product("", self.getCategoryName(), name, "Tesco", price, ppi, image, date.today(), offer)
+                    item = Product("", self.getCategoryID(), name, self.getSupermarket(), price, ppi, image, date.today(), offer)
                     #Each item is made into an object
 
                     #If the name and price are scraped (meaning they were available on that day) they are than
@@ -152,7 +161,7 @@ class Category():
                 except:
                     #If offer is unavailable the product is remade without the offer and than either updated or inserted if the product already exists or not
                     try:
-                        item = Product("", self.getCategoryName(), name, "Tesco", price, ppi, image, date.today(), None)
+                        item = Product("", self.getCategoryID(), name, self.getSupermarket(), price, ppi, image, date.today(), None)
                         if name is not None and price is not None:
                             if InDatabase:
                                 item.Update()
@@ -172,7 +181,7 @@ class Category():
         #driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
         driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Linux; Android 11; SAMSUNG SM-G973U) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/14.2 Chrome/87.0.4280.141 Mobile Safari/537.36'})
         sleep(1)
-        driver.get(self.getSainsburyURL())
+        driver.get(self.getURL())
 
         # Load page
         sleep(1) # Let the page load
@@ -192,7 +201,7 @@ class Category():
             options.add_argument("start-maximized")  # ensure window is full-screen
             driver = webdriver.Chrome(options=options)
             driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
-            driver.get(self.getSainsburyURL() + "/opt/page:" + str(i))
+            driver.get(self.getURL() + "/opt/page:" + str(i))
             sleep(5)
 
             # Parse page
@@ -257,7 +266,7 @@ class Category():
 
                     offer = product.find("span", class_ = "pt__cost--price").get_text()
 
-                    item = Product("", self.getCategoryName(), name, "Sainsbury", price, ppi, image, date.today(), offer)
+                    item = Product("", self.getCategoryID(), name, self.getSupermarket(), price, ppi, image, date.today(), offer)
 
                     if name is not None and price is not None:
                         if InDatabase:
@@ -268,7 +277,7 @@ class Category():
 
                 except:
                     try:
-                        item = Product("", self.getCategoryName(), name, "Sainsbury", price, ppi, image, date.today(), None)
+                        item = Product("", self.getCategoryID(), name, self.getSupermarket(), price, ppi, image, date.today(), None)
                         if name is not None and price is not None:
                             if InDatabase:
                                 item.Update()
@@ -286,7 +295,7 @@ class Category():
         connection.execute(Query)
         categories = connection.fetchall()
         for category in categories:
-            category = Category(category[0], category[1], category[2])
+            category = Category(category[0], category[1], category[2], category[3])
             CategoryList.append(category)
         connection.close()
         return CategoryList

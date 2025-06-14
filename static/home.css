@@ -1,0 +1,102 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+  }
+.Welcome {
+    text-align: center; 
+    margin-top: 20px; 
+}
+
+.Welcome h1 {
+    font-size: 24px;
+    color: #333;
+}
+.product-container {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+gap: 20px;
+justify-content: space-around;
+}
+
+.product {
+border: 1px solid #dddddd;
+border-radius: 8px;
+margin: 5px 0;
+padding: 15px;
+width: 200px;
+text-align: center;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+
+.product img {
+max-width: 100%;
+height: auto;
+border-radius: 4px;
+margin-bottom: 10px;
+}
+
+.quantity-form {
+display: flex;
+align-items: center;
+justify-content: center;
+margin-top: 10px;
+}
+
+.quantity-form label {
+margin-right: 5px;
+}
+
+.quantity-form input {
+height: 30px;
+width: 60px;
+text-align: center;
+margin-right: 10px;
+}
+
+.price-container {
+position: relative;
+display: inline-block;
+}
+
+.product.with-offer {
+flex-basis: 100%;
+}
+
+.price {
+font-size: 24px;
+bottom: 0;
+left: 0;
+}
+
+.opacity {
+opacity: 0.5; 
+}
+
+.IntroMessage {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.Message .flashes {
+    background-color: #ffcccc;
+    border: 1px solid #ff0000;
+    padding: 10px;
+    border-radius: 5px;
+    list-style-type: none;
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.Message .flashes li {
+    color: #ff0000;
+    margin-bottom: 5px;
+}
+

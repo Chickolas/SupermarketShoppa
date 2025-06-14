@@ -24,6 +24,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 #Initialises the website in flask and set the scheduler's timezone
 app = Flask(__name__, static_url_path='/static')
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.secret_key = "L6WKqDVEzu3PFlpjNxlFvmob2j_Shoppa"
@@ -573,25 +574,25 @@ def categorylist():
     if current_user.getAdmin() == True:
         Catagories = []
         Categories = Category.getCategories(Catagories)
-        CategoryName, TescoURL, SainsburyURL = None, None, None
+        CategoryName, Supermarket, URL = None, None, None
 
         #If a POST is sent a new category is added to the Category Table
         if request.method == 'POST':
             CategoryName = request.form.get('CategoryName')
-            TescoURL = request.form.get('TescoURL')
-            SainsburyURL = request.form.get('SainsburyURL')
-            CurrentCategory = Category(CategoryName, TescoURL, SainsburyURL)
+            Supermarket = request.form.get('TescoURL')
+            URL = request.form.get('SainsburyURL')
+            CurrentCategory = Category(CategoryName, Supermarket, URL)
             CurrentCategory.CreateCategory()
 
         #If Get method is sent, The table is updated without the page reloading with the updated values when save is pressed
         if request.method == 'GET':
             index = request.args.get('index')
-            TescoURL = request.args.get('column0')
-            SainsburyURL = request.args.get('column1')
+            Supermarket = request.args.get('column0')
+            URL = request.args.get('column1')
             try:
                 CurrentCategory = Categories[int(index)-1]
-                CurrentCategory.setTescoURL(TescoURL)
-                CurrentCategory.setSainsburyURL(SainsburyURL)
+                CurrentCategory.setSupermarket(Supermarket)
+                CurrentCategory.setURL(URL)
                 CurrentCategory.UpdateCategory()
             except Exception as e:
                 print(e)
@@ -610,8 +611,10 @@ def scrape():
             if current_user.getAdmin() == True:
                 CategoryList = Category.getCategories([])
                 for category in CategoryList:
-                    category.ScrapeTesco()
-                    category.ScrapeSainsbury()
+                    if category.getSupermarket() == "Tesco":
+                        category.ScrapeTesco()
+                    elif category.getSupermarket() == "Sainsbury":
+                        category.ScrapeSainsbury()
                 Product.DeleteOldProducts()
                 return redirect(url_for('adminpage'))
             else:
@@ -621,12 +624,17 @@ def scrape():
             if scheduler.running == True:
                 CategoryList = Category.getCategories([])
                 for category in CategoryList:
-                    category.ScrapeTesco()
-                    category.ScrapeSainsbury()
+                    if category.getSupermarket() == "Tesco":
+                        category.ScrapeTesco()
+                    elif category.getSupermarket() == "Sainsbury":
+                        category.ScrapeSainsbury()
                 Product.DeleteOldProducts()
                 return redirect(url_for('adminpage'))
 
 # scheduler.add_job(scrape, 'cron', hour=00, minute=59)
+@app.route('/ping')
+def ping():
+    return 'pong'
 
 if __name__ == '__main__':
     scheduler.start()

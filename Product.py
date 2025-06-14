@@ -24,9 +24,9 @@ def Connect_db():
     return db
 
 class Product():
-    def __init__(self, ProductID, CategoryName, ProductName, SuperMarket, ProductPrice, ProductPPI, Image, UpdateDate, Offer = None):
+    def __init__(self, ProductID, CategoryID, ProductName, SuperMarket, ProductPrice, ProductPPI, Image, UpdateDate, Offer = None):
         self.ProductID = ProductID
-        self.CategoryName = CategoryName
+        self.CategoryID = CategoryID
         self.ProductName = ProductName
         self.SuperMarket = SuperMarket
         self.ProductPrice = ProductPrice
@@ -39,8 +39,8 @@ class Product():
     def getProductID(self):
         return self.ProductID
 
-    def getCategoryName(self):
-        return self.CategoryName
+    def getCategoryID(self):
+        return self.CategoryID
 
     def getProductName(self):
         return self.ProductName 
@@ -67,8 +67,8 @@ class Product():
     def Insert(self):
         db = Connect_db()
         connection = db.cursor(buffered=True)
-        Query = "INSERT INTO Product(CategoryName, ProductName, SuperMarket, ProductPrice, ProductPPI, Image, Offer, UpdateDate) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        values = (self.getCategoryName(), self.getProductName(), self.getSuperMarket(), self.getProductPrice(), self.getProductPPI(), self.getImage(), self.getOffer(), self.getUpdateDate())
+        Query = "INSERT INTO Product(CategoryID, ProductName, SuperMarket, ProductPrice, ProductPPI, Image, Offer, UpdateDate) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        values = (self.getCategoryID(), self.getProductName(), self.getSuperMarket(), self.getProductPrice(), self.getProductPPI(), self.getImage(), self.getOffer(), self.getUpdateDate())
         connection.execute(Query, values)
         db.commit()
         connection.close()
@@ -76,8 +76,8 @@ class Product():
     def Update(self):
         db = Connect_db()
         connection = db.cursor(buffered=True)
-        Query = "Update Product SET CategoryName = %s, SuperMarket = %s, ProductPrice = %s, ProductPPI = %s, Image = %s, Offer = %s, UpdateDate = %s WHERE ProductName = %s"
-        values = (self.getCategoryName(), self.getSuperMarket(), self.getProductPrice(), self.getProductPPI(), self.getImage(), self.getOffer(), self.getUpdateDate(), self.getProductName())
+        Query = "Update Product SET CategoryID = %s, SuperMarket = %s, ProductPrice = %s, ProductPPI = %s, Image = %s, Offer = %s, UpdateDate = %s WHERE ProductName = %s"
+        values = (self.getCategoryID(), self.getSuperMarket(), self.getProductPrice(), self.getProductPPI(), self.getImage(), self.getOffer(), self.getUpdateDate(), self.getProductName())
         connection.execute(Query, values)
         db.commit()
         connection.close()
@@ -146,8 +146,8 @@ class Product():
         db = Connect_db()
         connection = db.cursor(buffered=True)
         
-        Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryName = Category.CategoryName WHERE (Product.SuperMarket = 'Tesco' AND Product.ProductName LIKE CONCAT('%', %s, '%')) OR (Product.SuperMarket = 'Tesco' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) ORDER BY ProductID ASC"
-        # Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryName = Category.CategoryName WHERE (Product.SuperMarket = 'Tesco' AND Product.ProductName LIKE CONCAT('%', %s, '%')) AND DATE(UpdateDate) = CURDATE() OR (Product.SuperMarket = 'Tesco' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) AND DATE(UpdateDate) = CURDATE() ORDER BY ProductID ASC"
+        Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryID = Category.CategoryID WHERE (Product.SuperMarket = 'Tesco' AND Product.ProductName LIKE CONCAT('%', %s, '%')) OR (Product.SuperMarket = 'Tesco' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) ORDER BY ProductID ASC"
+        # Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryID = Category.CategoryID WHERE (Product.SuperMarket = 'Tesco' AND Product.ProductName LIKE CONCAT('%', %s, '%')) AND DATE(UpdateDate) = CURDATE() OR (Product.SuperMarket = 'Tesco' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) AND DATE(UpdateDate) = CURDATE() ORDER BY ProductID ASC"
         Values = (ProductName, ProductName)
         connection.execute(Query, Values)
         productlist = connection.fetchall()
@@ -160,8 +160,8 @@ class Product():
     def SelectSainsbury(ProductList, ProductName):
         db = Connect_db()
         connection = db.cursor(buffered=True)
-        Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryName = Category.CategoryName WHERE (Product.SuperMarket = 'Sainsbury' AND Product.ProductName LIKE CONCAT('%', %s, '%')) OR (Product.SuperMarket = 'Sainsbury' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) ORDER BY ProductID ASC"
-        # Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryName = Category.CategoryName WHERE (Product.SuperMarket = 'Sainsbury' AND Product.ProductName LIKE CONCAT('%', %s, '%')) AND DATE(UpdateDate) = CURDATE() OR (Product.SuperMarket = 'Sainsbury' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) AND DATE(UpdateDate) = CURDATE() ORDER BY ProductID ASC"
+        Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryID = Category.CategoryID WHERE (Product.SuperMarket = 'Sainsbury' AND Product.ProductName LIKE CONCAT('%', %s, '%')) OR (Product.SuperMarket = 'Sainsbury' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) ORDER BY ProductID ASC"
+        # Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryID = Category.CategoryID WHERE (Product.SuperMarket = 'Sainsbury' AND Product.ProductName LIKE CONCAT('%', %s, '%')) AND DATE(UpdateDate) = CURDATE() OR (Product.SuperMarket = 'Sainsbury' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) AND DATE(UpdateDate) = CURDATE() ORDER BY ProductID ASC"
         Values = (ProductName, ProductName)
         connection.execute(Query, Values)
         productlist = connection.fetchall()
@@ -176,8 +176,8 @@ class Product():
     def SelectTescoOffers(ProductList, ProductName):
         db = Connect_db()
         connection = db.cursor(buffered=True)
-        Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryName = Category.CategoryName WHERE (Product.SuperMarket = 'Tesco' AND Product.ProductName LIKE CONCAT('%', %s, '%')) AND Offer IS NOT NULL OR (Product.SuperMarket = 'Tesco' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) AND Offer IS NOT NULL ORDER BY ProductPrice ASC"
-        # Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryName = Category.CategoryName WHERE (Product.SuperMarket = 'Tesco' AND Product.ProductName LIKE CONCAT('%', %s, '%')) AND DATE(UpdateDate) = CURDATE() AND Offer IS NOT NULL OR (Product.SuperMarket = 'Tesco' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) AND Offer IS NOT NULL AND DATE(UpdateDate) = CURDATE() ORDER BY ProductPrice ASC"
+        Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryID = Category.CategoryID WHERE (Product.SuperMarket = 'Tesco' AND Product.ProductName LIKE CONCAT('%', %s, '%')) AND Offer IS NOT NULL OR (Product.SuperMarket = 'Tesco' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) AND Offer IS NOT NULL ORDER BY ProductPrice ASC"
+        # Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryID = Category.CategoryID WHERE (Product.SuperMarket = 'Tesco' AND Product.ProductName LIKE CONCAT('%', %s, '%')) AND DATE(UpdateDate) = CURDATE() AND Offer IS NOT NULL OR (Product.SuperMarket = 'Tesco' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) AND Offer IS NOT NULL AND DATE(UpdateDate) = CURDATE() ORDER BY ProductPrice ASC"
         Values = (ProductName, ProductName)
         connection.execute(Query, Values)
         productlist = connection.fetchall()
@@ -190,8 +190,8 @@ class Product():
     def SelectSainsburyOffers(ProductList, ProductName):
         db = Connect_db()
         connection = db.cursor(buffered=True)
-        Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryName = Category.CategoryName WHERE (Product.SuperMarket = 'Sainsbury' AND Product.ProductName LIKE CONCAT('%', %s, '%')) AND Offer IS NOT NULL OR (Product.SuperMarket = 'Sainsbury' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) AND Offer IS NOT NULL ORDER BY ProductPrice ASC"
-        # Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryName = Category.CategoryName WHERE (Product.SuperMarket = 'Sainsbury' AND Product.ProductName LIKE CONCAT('%', %s, '%')) AND Offer IS NOT NULL AND DATE(UpdateDate) = CURDATE() OR (Product.SuperMarket = 'Sainsbury' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) AND Offer IS NOT NULL AND DATE(UpdateDate) = CURDATE() ORDER BY ProductPrice ASC"
+        Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryID = Category.CategoryID WHERE (Product.SuperMarket = 'Sainsbury' AND Product.ProductName LIKE CONCAT('%', %s, '%')) AND Offer IS NOT NULL OR (Product.SuperMarket = 'Sainsbury' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) AND Offer IS NOT NULL ORDER BY ProductPrice ASC"
+        # Query = "SELECT DISTINCT * FROM Product INNER JOIN Category ON Product.CategoryID = Category.CategoryID WHERE (Product.SuperMarket = 'Sainsbury' AND Product.ProductName LIKE CONCAT('%', %s, '%')) AND Offer IS NOT NULL AND DATE(UpdateDate) = CURDATE() OR (Product.SuperMarket = 'Sainsbury' AND Category.CategoryName LIKE CONCAT('%', %s, '%')) AND Offer IS NOT NULL AND DATE(UpdateDate) = CURDATE() ORDER BY ProductPrice ASC"
         Values = (ProductName, ProductName)
         connection.execute(Query, Values)
         productlist = connection.fetchall()

@@ -1,0 +1,82 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.navigation {
+    margin-bottom: 20px;
+}
+
+.add-friend-form {
+    margin-bottom: 20px;
+}
+
+.add-friend-form label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.add-friend-form input[type="text"] {
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: calc(100% - 150px); /* Adjust width as needed */
+    max-width: 300px; /* Adjust max-width as needed */
+}
+
+.add-friend-form button {
+    padding: 8px 16px !important;
+    background-color: #4CAF50 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+}
+
+.friend-list-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.friend-list-table th, .friend-list-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.friend-list-table th {
+    background-color: #f2f2f2;
+    width: calc(100% / 3); /* Equal width for each header cell */
+}
+
+.friend-list-table a {
+    text-decoration: none;
+    color: #4CAF50;
+}
+
+.friend-list-table a:hover {
+    text-decoration: underline;
+}
+
+/* Remove bullet points from list items */
+.friend-list-table ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.friend-list-table li {
+    margin-bottom: 5px;
+}
