@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoppa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    {% extends 'navbar.html' %}
+    {% block title %}Welcome {{ current_user.getUserName() }}{% endblock %}
+    {% block content %}
+    <div class="Message">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+        {% block body %}{% endblock %}
+    </div>
+    {% if Products|length > 0 or ProductName %}
+    <div>
+        <h2>Results for "{{ProductName}}"</h2>
+        {% if Products|length == 0 %}<h3>We could not find anthing for "{{ProductName}}"</h3>{% endif %}
+    </div>
+    <div>
+        <form method="post" action="{{ url_for('home') }}">
+            <select id="Orderby" name="Orderby" onchange="this.form.submit()">
+                <option value="Price"{% if "Price" in Order %} selected {% endif %}>Price (Low to High)</option>
+                <option value="ReversePrice"{% if "ReversePrice" in Order %} selected {% endif %}>Price (High to Low)</option>
+                <option value="PPI"{% if "PPI" in Order %} selected {% endif %}>PPI (Low to High)</option>
+                <option value="ReversePPI"{% if "ReversePPI" in Order %} selected {% endif %}>PPI (High to Low)</option>
+            </select>
+            <label for="Offer"><b>Offers only: </b></label>
+            <input type="checkbox" id="Offer" name="Offer" value="Offer" {% if session.get('Offer') == 'Offer' %}checked{% endif %}>
+            <!-- Add JavaScript to submit the form when the checkbox is clicked -->
+            <script>
+                document.getElementById('Offer').addEventListener('change', function() {
+                    this.form.submit();
+                });
+            </script>
+        </form>
+    </div>
+
+    <h1>{{ Products.CategoryName }}</h1>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}"> -->
+    <div class="product-container">
+        {% for product in Products %}
+        <div class="product">
+            <h4>{{ product.getSuperMarket() }}</h4>
+            <img src="{{ product.getImage() }}" alt="Product">
+            <h3>{{ product.getProductName() }}</h3>            
+            <p><strong class="price">£{{ product.getProductPrice() }} </strong> <span class="opacity">£{{ product.getProductPPI() }}</span></p>
+            <form method="post" action="{{ url_for('AddProductToBasket', ProductID=product.getProductID()) }}" class="quantity-form">
+                <input type="number" id="quantity" name="quantity" value="1" min="1", max="99">
+                <button type="submit">Add</button>
+            </form>
+            {% if product.getOffer() is not none %}
+            <p><strong>Offer:</strong> {{ product.getOffer() }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="Welcome">
+        <h1>Welcome {{ current_user.getUserName() }}</h1>
+    </div>
+    <div class="IntroMessage"> 
+        Welcome to Shoppa, your home for price comparison and budgetting. Use the search bar above to look for any items that you need to buy for your weekly food shop and we will show you the cheapest possible options. Use the top right basket icon to see current baskets or use the options selector in the top left to browse your old orders, See your friends baskets or log out!
+    </div>
+    {% endif %}
+    {% endblock %}
+</body>
+
+
+</html>
+
+

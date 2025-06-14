@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friend List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='friendlist.css') }}">
+</head>
+{% extends 'navbar.html' %}
+{% block title %}FriendList{% endblock %}
+{% block content %}
+<body>
+    <div class="container">
+        <div class="navigation">
+            <a href="/">Go Home</a>
+        </div>
+
+        <form class="add-friend-form" method="post" action="{{ url_for('addfriend') }}" autocomplete="off">
+            <label for="FriendUsername"><b>Add Friend</b></label>
+            <input type="text" placeholder="Enter Friend's Username" name="FriendUsername" required>
+            <button type="submit">Add Friend</button>
+        </form>
+
+        <table class="friend-list-table">
+            <tr>
+                <th>Friends</th>
+                <th>Friend Requests</th>
+                <th>Blocked Users</th>
+            </tr>
+            <tr>
+                <td>
+                    <ul>
+                        {% for user in Users %}
+                            <li>
+                                {{ user.getUserName() }} 
+                                <span>|</span>
+                                <a href="/basket/{{ user.getID() }}">Friends Basket</a>
+                                <span>&bull;</span> 
+                                <a href="{{ url_for('removefriend', FriendUsername=user.getUserName()) }}">Remove</a>
+                                <span>&bull;</span>  
+                                <a href="{{ url_for('blockfriend', FriendUsername=user.getUserName()) }}">Block</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        {% for request in Requests %}
+                            <li>
+                                {{ request.getUserName() }} 
+                                <span>|</span>
+                                <a href="{{ url_for('acceptfriendrequest', FriendUsername=request.getUserName()) }}">Accept</a>
+                                <span>&bull;</span>  
+                                <a href="{{ url_for('denyfriendrequest', FriendUsername=request.getUserName()) }}">Deny</a>
+                                <span>&bull;</span>  
+                                <a href="{{ url_for('blockfriend', FriendUsername=request.getUserName()) }}">Block</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        {% for block in Blocked %}
+                            <li>
+                                {{ block.getUserName() }} 
+                                <span>|</span>
+                                <a href="{{ url_for('denyfriendrequest', FriendUsername=block.getUserName()) }}">Unblock</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+{% endblock %}
+</html>

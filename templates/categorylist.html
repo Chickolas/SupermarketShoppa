@@ -1,0 +1,39 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='categorylist.css') }}">
+    {% extends 'navbar.html' %}
+    {% block title %}CategoryList{% endblock %}
+    {% block content %}
+    </head>
+    <body>
+    <table>
+        <tr>
+            <th>Category Name</th>
+            <th>Tesco URL</th>
+            <th>Sainsbury URL</th>
+            <th>Edit</th>
+        </tr>
+        {% for category in categories %}
+        <tr id="row_{{ loop.index }}">
+            <td>{{ category.getCategoryName() }}</td>
+            <td>{{ category.getTescoURL() }}</td>
+            <td>{{ category.getSainsburyURL() }}</td>
+            <td><button onclick="editRow('{{ loop.index }}')">Edit</button></td>
+        </tr>
+        {% endfor %}
+        <tr id="new_category">
+            <form method="post" action="{{ url_for('categorylist') }}" style="display: inline-block;" class="quantity-form">
+                <td><input type="text" id="CategoryName" placeholder="Category Name" name="CategoryName" class="Category" autocomplete="off" required></td>
+                <td><input type="text" id="TescoURL" placeholder="Enter TescoURL" name="TescoURL" class="Category" autocomplete="off" required></td>
+                <td><input type="text" id="SainsburyURL" placeholder="Enter SainsburyURL" name="SainsburyURL" class="Category" autocomplete="off" required></td>
+                <td><button type="submit" class="custom-submit">Add</button></td>
+            </form>
+        </tr>
+    </table>
+    <script src="{{ url_for('static', filename='categoryscript.js') }}"></script>
+    {% endblock %}
+    </body>
+    </html>

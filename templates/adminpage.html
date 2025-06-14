@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends 'navbar.html' %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Admin Page</title>
+    {% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='adminpage.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="navigation">
+            <ul>
+                <li><a href="Userlist">Users</a></li>
+                <li><a href="Categorylist">CategoryList</a></li>
+                <li><a href="ScrapeCategories">Scrape Categories</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            <div class="admin-section" id="users">
+                <h2>Manage Users</h2>
+                <p>This section allows you to manage user permissions</p>
+            </div>
+            <div class="admin-section" id="categories">
+                <h2>Manage Categories</h2>
+                <p>Add or edit categories which need to be scraped.</p>
+            </div>
+            <div class="admin-section" id="scrape">
+                <h2>Manually Scrape</h2>
+                <p>Manually scrape the categories in the category list</p>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}
+</html>

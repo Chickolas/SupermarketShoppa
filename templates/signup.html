@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='signup.css') }}">
+    <script src="{{ url_for('static', filename='login.js') }}"></script>
+</head>
+<body>
+    <div class="container">
+        <img class="logo" src="static\pictures\Logo1.png" alt="Logo">
+        <form method="post" action="{{ url_for('signup_post') }}">
+            <label for="email">Email</label>
+            <input type="text" placeholder="Enter Email" name="email" autocomplete="off" required>
+            <label for="username">Username</label>
+            <input type="text" placeholder="Enter Username" name="username" autocomplete="off" required>
+            <label for="password">Password</label>
+            <input type="password" placeholder="Enter Password" name="password" autocomplete="off" required>
+            <label for="password2">Verify Password</label>
+            <input type="password" placeholder="Enter Password again" name="password2" autocomplete="off" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flashes">
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endwith %}
+        <div>
+            <a href="/login">Go To Login</a>
+        </div>
+    </div>
+</body>
+</html>

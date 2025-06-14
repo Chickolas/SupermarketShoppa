@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basket</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='basket.css') }}">
+</head>
+<body>
+    <div class="navigation">
+        {% extends 'navbar.html' %}
+        {% block content %}
+        <a href="/">Go Home</a>
+        <a href="/Friendlist">FriendList</a>
+
+    </div>
+    <div class="container">
+        <div class="container">
+            <table>
+                <tr>
+                    <th colspan="4">Sainsburys basket</th>
+                </tr>
+                <tr>
+                    <th>Image</th>
+                    <th>Product Name</th>
+                    <th>Total Price</th>
+                    <th>Quantity</th>
+                </tr>
+                {% for product in Products %}
+                    {% if product.SuperMarket == "Sainsbury" %}
+                        <tr>
+                            <td><img src="{{ product.getImage() }}" alt="{{ product.getProductName() }}" style="max-width: 100px;"></td>
+                            <td>{{ product.getProductName() }} <p>{% if product.getOffer() is not none %} (Offer: {{ product.getOffer() }}) {% endif %}</p></td>
+                            <td>£{{ Prices[loop.index0] }}</td>
+                            <td>
+                                {% if current_user.getID() == UserID and CurrentBasket.getActive() %}
+                                    <form method="post" action="{{ url_for('ChangeQuantityInBasket', ProductID=product.getProductID()) }}" class="quantity-form">
+                                        <input type="number" id="quantity" name="quantity" value="{{ Quantities[loop.index0] }}" min="0", max="99">
+                                        <button type="submit" class="button">Change</button>
+                                    </form>
+                                {% else %}
+                                {{ Quantities[loop.index0] }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+        </div>
+    <div class="container">
+        <table>
+            <tr>
+                <th colspan="4">Tescos basket</th>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <th>Product Name</th>
+                <th>Total Price</th>
+                <th>Quantity</th>
+            </tr>
+            {% for product in Products %}
+                {% if product.SuperMarket == "Tesco" %}
+                    <tr>
+                        <td><img src="{{ product.getImage() }}" alt="{{ product.getProductName() }}" style="max-width: 100px;"></td>
+                        <td>{{ product.getProductName() }} <p>{% if product.getOffer() is not none %} (Offer: {{ product.getOffer() }}) {% endif %}</p></td>
+                        <td>£{{ Prices[loop.index0] }}</td>
+                        <td>
+                            {% if current_user.getID() == UserID and CurrentBasket.getActive() %}
+                                <form method="post" action="{{ url_for('ChangeQuantityInBasket', ProductID=product.ProductID) }}" class="quantity-form">
+                                    <input type="number" id="quantity" name="quantity" value="{{ Quantities[loop.index0] }}" min="0" max="99">
+                                    <button type="submit" class="button">Change</button>
+                                </form>
+                            {% else %}
+                            {{ Quantities[loop.index0] }}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+            <div class="basket-summary">
+                <h3>Basket Summary</h3>
+                <p>SainsburyTotal: £{{ SainsburyTotal }}</p>
+                <p>TescoTotal: £{{ TescoTotal }}</p>
+                <p>Basket Total: £{{ SainsburyTotal + TescoTotal }}</p>
+                {% if current_user.getID() == UserID and CurrentBasket.getActive() %}
+                <div class="checkout-button">
+                    <a href="{{ url_for('CheckOut') }}" class="button">Checkout</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+</body>
+{% endblock %}
+</html>

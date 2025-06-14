@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UserList</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='userlist.css') }}">
+    {% extends 'navbar.html'%}
+</head>
+<body>
+    {% block content %}
+    <div class="container">
+        <div class="nav-link">
+            <a href="/">Go Home</a>
+        </div>
+        <table>
+            <tr>
+                <th>User List</th>
+            </tr>
+            {% for user in Users %}
+            <tr>
+                <td>
+                    UserName: {{ user.getUserName() }} {% if user.getAdmin() == True %} Admin {% else %} User {% endif %}
+                    <div class="admin-links">
+                        <a href="/addAdmin/{{ user.getID() }}">Add Admin</a> |
+                        <a href="/removeAdmin/{{ user.getID() }}">Remove Admin</a>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}    
+        </table>
+    </div>
+    {% endblock %}
+</body>
+</html>

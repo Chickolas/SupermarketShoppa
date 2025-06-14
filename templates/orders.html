@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MyOrders</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='orders.css') }}">
+</head>
+{% extends 'navbar.html' %}
+<body>
+    <div class="GraphContainer">
+        {% block content %}
+        <div class="Graph">
+            <form action="{{ url_for('Orders') }}" method="post">
+                <select id="GraphType" name="GraphType" onchange="this.form.submit()">
+                    <option value="WeeklySplit" {% if "WeeklySplit" in GraphType %} selected {% endif %}>Split Weekly Spending</option>
+                    <option value="YearlyTotal" {% if "YearlyTotal" in GraphType %} selected {% endif %}>Total Yearly Spending</option>
+                    <option value="MonthlyPieChart"{% if "MonthlyPieChart" in GraphType %} selected {% endif %}>Monthly SuperMarket Split</option>
+                </select>
+            </form>
+            {% for fig in GraphHTML %}
+            {{ fig|safe }}
+            {% endfor %}
+        </div>
+        <ul class="basket-list">
+            {% for BasketID in BasketIDs%}
+            <li>
+                <form method="post" action="{{ url_for('OldOrder') }}" style="display: inline-block;">
+                    <input type="hidden" name="BasketID" class="BasketButton" value="{{ BasketID }}">
+                    <button type="submit">Go to Basket {{ BasketID }}</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endblock %}
+    </div>
+</body>
+</html>

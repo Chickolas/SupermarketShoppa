@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Shopper{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='navbar.css') }}">
+  <link rel="shortcut icon" href={{ url_for("static", filename="favicon.ico") }}>
+</head>
+<body>
+    <div class="navbar">
+        <div class="menu-toggle" onclick="toggleMenu()">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <ul class="menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="/basket/{{ current_user.getID() }}"> Go To Basket </a></li>
+            <li><a href="/Adminpage"> Adminpage </a></li>
+            <li><a href="/Friendlist"> FriendList </a></li>
+            <li><a href="/yourOrders"> yourOrders</a></li>
+            <li><a href="/logout"> Logout </a></li>
+            <span class="close-btn" onclick="closeMenu()">X</span>
+        </ul>
+        <div class="search-bar">
+          <form method="post" action="{{ url_for('home') }}" autocomplete="off">
+            <input type="text" placeholder="Search" name="ProductName" required>
+            <input type="hidden" name="Search" value="1">
+            <button type="submit">Search</button>
+          </form>
+        </div>
+        <a href="/basket/{{ current_user.getID() }}" class="basket-btn">
+          <img src="{{ url_for('static', filename='pictures/basket.png') }}" alt="Basket">
+      </a>
+    </div>
+    <div class="content" onclick="closeMenu()">
+        {% block content %}{% endblock %}
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
