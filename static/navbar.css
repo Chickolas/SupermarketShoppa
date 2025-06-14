@@ -1,0 +1,147 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: calc(100% - 40px);
+  height: 60px;
+  background-color: #333;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 999;
+}
+
+.content {
+  padding: 15px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.menu-toggle {
+  cursor: pointer;
+}
+
+.bar {
+  width: 25px;
+  height: 3px;
+  background-color: #fff;
+  margin: 4px 0;
+}
+
+.menu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    top: 0;
+    left: -200px;
+    width: 200px;
+    height: 100vh;
+    background-color: #222;
+    transition: left 0.3s ease;
+    z-index: 1000; /* Ensure the menu is above other content */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+}
+
+.menu.active {
+    left: 0;
+}
+
+.menu li {
+    padding: 10px 20px; /* Add padding */
+    border-bottom: 1px solid #444; /* Add border bottom */
+}
+
+.menu a {
+    color: #fff;
+    text-decoration: none;
+    display: block; /* Display links as block elements */
+    transition: color 0.3s; /* Add transition for color change */
+}
+
+.menu a:hover {
+    color: #00ff00; /* Change color on hover */
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.close-btn:hover {
+    color: #ff0000; /* Change color on hover */
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1; 
+}
+
+.search-bar input[type="text"] {
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-right: 10px;
+  margin-left: 10px;
+  flex: 1;
+  max-width: 70%;
+  width: 400px;
+  height: 30px;
+}
+
+.search-bar button {
+  padding: 5px 10px;
+  background-color: #666;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button[type="submit"] {
+  border-radius: 20px;
+  width: 120px; 
+  height: 40px; 
+  font-size: 16px; 
+  background-color: #007bff; 
+  color: #fff; 
+  border: none; 
+  cursor: pointer; 
+  transition: background-color 0.3s ease; 
+}
+
+button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+.basket-btn img {
+  width: 30px;
+  height: auto;
+}
+
+.quantity-form .custom-submit {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.custom-submit:hover {
+  background-color: #45a049; /* Darker green */
+}
+

@@ -1,0 +1,43 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+.product-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    justify-content: space-around;
+}
+.product {
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    margin: 5px 0;
+    padding: 15px;
+    width: 200px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.product img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+.quantity-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+.quantity-form label {
+    margin-right: 5px;
+}
+.quantity-form input {
+    width: 60px; /* Adjust the width of the input box */
+    height: 30px;
+    text-align: center;
+    padding: 5px; /* Add padding for better appearance */
+}

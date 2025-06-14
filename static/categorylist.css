@@ -1,0 +1,55 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+  }
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+input[class="Category"] {
+    width: calc(100% - 16px);
+    height: 30px;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.custom-submit {
+    padding: 8px 8px !important;
+    background-color: #4CAF50 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+}
+
+button.save-btn {
+    padding: 8px 16px !important;
+    background-color: #28a745 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+}
+
+button.save-btn:hover {
+    background-color: #218838 !important;
+}
+
+button.edit-btn {
+    padding: 8px 16px !important;
+    background-color: #007bff !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+}
+
+button.edit-btn:hover {
+    background-color: #0056b3 !important;
+}
