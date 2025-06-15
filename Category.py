@@ -6,6 +6,10 @@ from time import sleep
 from decimal import Decimal, ROUND_HALF_UP
 from datetime import date
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 class Category():
     def __init__(self, CategoryID, CategoryName, Supermarket, URL):
         self.__CategoryID = CategoryID
@@ -62,16 +66,16 @@ class Category():
         # print(self.__CategoryID, self.__CategoryName, self.__Supermarket, self.__URL)
 
         # Compile regex for the tesco price strings - Allows only the numbers to be gotten 
-        price_regex = re.compile(".*beans-price__text$")
-        ppi_regex = re.compile(".*beans-price__subtext$")
+        price_regex = re.compile(".*PriceText.*")
+        ppi_regex = re.compile(".*Subtext.*")
 
         # Configures the selenium webdriver to chrome and allows manipulations of the oprions before scraping
         options = webdriver.ChromeOptions()
         options.add_argument("--window-size=1920,1080")
         options.add_argument("start-maximized")
         driver = webdriver.Chrome(options=options)
-        driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
-        #driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Linux; Android 11; SAMSUNG SM-G973U) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/14.2 Chrome/87.0.4280.141 Mobile Safari/537.36'})
+        # driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
+        driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Linux; Android 11; SAMSUNG SM-G973U) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/14.2 Chrome/87.0.4280.141 Mobile Safari/537.36'})
         sleep(1)
         driver.get(self.getURL())
         
@@ -82,11 +86,15 @@ class Category():
         html = driver.page_source
         soup = BeautifulSoup(html, 'html.parser')
         #Find the page number from the html line including "pagination--button" and grabs the page reference
-        try:
-            page_number = re.search(r'\?page=(\d+)', soup.findAll("a", class_ = "pagination--button")[-2].get("href")).group(1)
-        except:
-            page_number = 1
+        pagination_links = soup.find_all("a", attrs={"data-page": True})
 
+        # Extract all page numbers as integers
+        page_numbers = [int(link["data-page"]) for link in pagination_links if link["data-page"].isdigit()]
+
+        # Get the maximum page number
+        page_number = max(page_numbers) if page_numbers else 1
+
+        
         # Get the product grid
         for i in range(1, int(page_number) + 1):
             options = webdriver.ChromeOptions()
@@ -98,47 +106,37 @@ class Category():
             
             driver.get(self.getURL() + "?page=" + str(i))
             
-            sleep(5) # Let the page load fully before trying to grab information
-
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "#list-content li")))
             # Parse page
             html = driver.page_source
             soup = BeautifulSoup(html, 'html.parser')
 
-            grid = soup.find("ul", attrs={"class":"product-list grid"})
-            products = grid.find_all("li")
+            grid = soup.find("ul", attrs={"id":"list-content"})
+            products = grid.find_all("li", attrs={"data-testid": True})
 
             # Selection of all required elements from the product grid 
             for product in products:
                 try:
-                    #Each product is stored 3 div elements from the item in the list
-                    product = product.div.div.div
-
                     #Using the beautiful soup find function all relevant information is than grabbed from their html elements and standardised in the samme formats
                     image = product.img.get("src")
-                    name = product.find("a", attrs={"data-auto":"product-tile--title"}).span.get_text().strip()
-                    price = product.find("p", class_ = price_regex).get_text().strip()[1:]        
-                    ppi = product.find("p", class_ = ppi_regex).get_text().strip()
-                    if "£" in ppi:
-                        ppi = ppi.replace("£", "")
-                        if "each" in ppi:
-                            ppi = ppi.replace("/each", "")
-                        if "litre" in ppi:
-                            ppi = ppi.replace("/litre", "")
-                        if "kg" in ppi:
-                            ppi = ppi.replace("/kg", "")
-                        if "ml" in ppi:
-                            ppi = ppi.replace("/100ml", "")
-                            ppi = Decimal(ppi)*10
+                    print(image)
+                    name = product.find("a", attrs={"aria-label": True}).get_text(strip=True)
+                    print(name)
+                    price = product.find("p", class_ = price_regex).get_text(strip=True)[1:]
+                    print(price)
+                    ppi = product.find("p", class_ = ppi_regex).get_text(strip=True)[1:]
+                    print(ppi)
 
-                    if "p" in ppi:
-                        ppi = ppi.replace("p / ea", "")
-                        if "g" or "ml" in ppi:
-                            ppi = ppi.replace("p / 100g", "")
-                            ppi = ppi.replace("p / 100ml", "")
-                            ppi = Decimal(ppi)*10
-                        if "ltr" in ppi:
-                            ppi = ppi.replace("p / ltr", "")
-                        ppi = Decimal(ppi)/100
+                    if "each" in ppi:
+                        ppi = ppi.replace("/each", "")
+                    if "litre" in ppi:
+                        ppi = ppi.replace("/litre", "")
+                    if "kg" in ppi:
+                        ppi = ppi.replace("/kg", "")
+                    if "ml" in ppi:
+                        ppi = ppi.replace("/100ml", "")
+                        ppi = Decimal(ppi)*10
+
                     ppi = Decimal(ppi).quantize(Decimal("0.00"), ROUND_HALF_UP)
                     
 

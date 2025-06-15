@@ -66,8 +66,8 @@ class Category():
         # print(self.__CategoryID, self.__CategoryName, self.__Supermarket, self.__URL)
 
         # Compile regex for the tesco price strings - Allows only the numbers to be gotten 
-        price_regex = re.compile(".*beans-price__text$")
-        ppi_regex = re.compile(".*beans-price__subtext$")
+        price_regex = re.compile(".*PriceText.*")
+        ppi_regex = re.compile(".*Subtext.*")
 
         # Configures the selenium webdriver to chrome and allows manipulations of the oprions before scraping
         options = webdriver.ChromeOptions()
@@ -86,11 +86,13 @@ class Category():
         html = driver.page_source
         soup = BeautifulSoup(html, 'html.parser')
         #Find the page number from the html line including "pagination--button" and grabs the page reference
-        try:
-            page_number = re.search(r'\?page=(\d+)', soup.findAll("a", class_ = "pagination--button")[-2].get("href")).group(1)
-            print(page_number)
-        except:
-            page_number = 1
+        pagination_links = soup.find_all("a", attrs={"data-page": True})
+
+        # Extract all page numbers as integers
+        page_numbers = [int(link["data-page"]) for link in pagination_links if link["data-page"].isdigit()]
+
+        # Get the maximum page number
+        page_number = max(page_numbers) if page_numbers else 1
 
         
         # Get the product grid
@@ -110,42 +112,31 @@ class Category():
             soup = BeautifulSoup(html, 'html.parser')
 
             grid = soup.find("ul", attrs={"id":"list-content"})
-            products = grid.find_all("li")
+            products = grid.find_all("li", attrs={"data-testid": True})
 
             # Selection of all required elements from the product grid 
             for product in products:
                 try:
-                    #Each product is stored 3 div elements from the item in the list
-                    product = product.div.div.div
-                    
-
                     #Using the beautiful soup find function all relevant information is than grabbed from their html elements and standardised in the samme formats
                     image = product.img.get("src")
-                    name = product.find("a").get_text(strip=True)
-                    price = product.find("p", class_ = price_regex).get_text().strip()[1:]        
-                    ppi = product.find("p", class_ = ppi_regex).get_text().strip()
-                    print(image, name, price, ppi)
-                    if "£" in ppi:
-                        ppi = ppi.replace("£", "")
-                        if "each" in ppi:
-                            ppi = ppi.replace("/each", "")
-                        if "litre" in ppi:
-                            ppi = ppi.replace("/litre", "")
-                        if "kg" in ppi:
-                            ppi = ppi.replace("/kg", "")
-                        if "ml" in ppi:
-                            ppi = ppi.replace("/100ml", "")
-                            ppi = Decimal(ppi)*10
+                    print(image)
+                    name = product.find("a", attrs={"aria-label": True}).get_text(strip=True)
+                    print(name)
+                    price = product.find("p", class_ = price_regex).get_text(strip=True)[1:]
+                    print(price)
+                    ppi = product.find("p", class_ = ppi_regex).get_text(strip=True)[1:]
+                    print(ppi)
 
-                    if "p" in ppi:
-                        ppi = ppi.replace("p / ea", "")
-                        if "g" or "ml" in ppi:
-                            ppi = ppi.replace("p / 100g", "")
-                            ppi = ppi.replace("p / 100ml", "")
-                            ppi = Decimal(ppi)*10
-                        if "ltr" in ppi:
-                            ppi = ppi.replace("p / ltr", "")
-                        ppi = Decimal(ppi)/100
+                    if "each" in ppi:
+                        ppi = ppi.replace("/each", "")
+                    if "litre" in ppi:
+                        ppi = ppi.replace("/litre", "")
+                    if "kg" in ppi:
+                        ppi = ppi.replace("/kg", "")
+                    if "ml" in ppi:
+                        ppi = ppi.replace("/100ml", "")
+                        ppi = Decimal(ppi)*10
+
                     ppi = Decimal(ppi).quantize(Decimal("0.00"), ROUND_HALF_UP)
                     
 
@@ -208,7 +199,7 @@ class Category():
             options.add_argument("start-maximized")  # ensure window is full-screen
             driver = webdriver.Chrome(options=options)
             driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.53 Safari/537.36'})
-            driver.get(self.getURL() + "/opt/page:" + str(i))
+            driver.get(self.getURL() + "?page=" + str(i))
             sleep(5)
 
             # Parse page
@@ -306,10 +297,3 @@ class Category():
             CategoryList.append(category)
         connection.close()
         return CategoryList
-
-# CategoryList = Category.getCategories([])
-# for category in CategoryList:
-#     if category.getSupermarket() == "Tesco":
-#         category.ScrapeTesco()
-#     # elif category.getSupermarket() == "Sainsbury":
-#         # category.ScrapeSainsbury()
