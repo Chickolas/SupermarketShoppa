@@ -144,7 +144,7 @@ class Category():
                     InDatabase = Product.CheckProduct(name)
 
                     #Offer is attempted to be gotten from the item, If one doesnt exist an exception is raised
-                    offer = product.find("span", class_ = "offer-text").get_text()
+                    offer = product.find("p", class_ = "ddsweb-value-bar__content-text").get_text()
                     item = Product("", self.getCategoryID(), name, self.getSupermarket(), price, ppi, image, date.today(), offer)
                     #Each item is made into an object
 
