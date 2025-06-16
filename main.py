@@ -201,6 +201,9 @@ def basket(UserID):
             CurrentBasket = pickle.loads(session.get('OldBasketID', None))
         except:
             CurrentBasket = Basket.getBasketFromUserID(UserID)
+            if not CurrentBasket:
+                Basket.CreateBasket(current_user.getID())
+                CurrentBasket = Basket.getBasketFromUserID(UserID)
             session['Basket'] = pickle.dumps(CurrentBasket)
 
         Orders = OrderDetails.SelectAllOrders(CurrentBasket.getBasketID())
@@ -579,8 +582,8 @@ def categorylist():
         #If a POST is sent a new category is added to the Category Table
         if request.method == 'POST':
             CategoryName = request.form.get('CategoryName')
-            Supermarket = request.form.get('TescoURL')
-            URL = request.form.get('SainsburyURL')
+            Supermarket = request.form.get('Supermarket')
+            URL = request.form.get('URL')
             CurrentCategory = Category(CategoryName, Supermarket, URL)
             CurrentCategory.CreateCategory()
 

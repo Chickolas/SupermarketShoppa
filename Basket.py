@@ -42,7 +42,7 @@ class Basket():
         db = Connect_db()
         connection = db.cursor(buffered=True)
         Query = "INSERT INTO Basket(BasketID, UserID, EditDate, IsActive) VALUES(%s, %s, %s, %s)"
-        values = ("", UserID, date.today(), True)
+        values = (0, UserID, date.today(), True)
         connection.execute(Query, values)
         db.commit()
         connection.close()

@@ -297,10 +297,3 @@ class Category():
             CategoryList.append(category)
         connection.close()
         return CategoryList
-
-CategoryList = Category.getCategories([])
-for category in CategoryList:
-    if category.getSupermarket() == "Tesco":
-        category.ScrapeTesco()
-    elif category.getSupermarket() == "Sainsbury":
-        category.ScrapeSainsbury()

@@ -12,8 +12,8 @@
     <table>
         <tr>
             <th>Category Name</th>
-            <th>Tesco URL</th>
-            <th>Sainsbury URL</th>
+            <th>Supermarket</th>
+            <th>URL</th>
             <th>Edit</th>
         </tr>
         {% for category in categories %}
@@ -27,8 +27,8 @@
         <tr id="new_category">
             <form method="post" action="{{ url_for('categorylist') }}" style="display: inline-block;" class="quantity-form">
                 <td><input type="text" id="CategoryName" placeholder="Category Name" name="CategoryName" class="Category" autocomplete="off" required></td>
-                <td><input type="text" id="TescoURL" placeholder="Enter TescoURL" name="TescoURL" class="Category" autocomplete="off" required></td>
-                <td><input type="text" id="SainsburyURL" placeholder="Enter SainsburyURL" name="SainsburyURL" class="Category" autocomplete="off" required></td>
+                <td><input type="text" id="Supermarket" placeholder="Enter Supermarket" name="Supermarket" class="Category" autocomplete="off" required></td>
+                <td><input type="text" id="URL" placeholder="Enter URL" name="URL" class="Category" autocomplete="off" required></td>
                 <td><button type="submit" class="custom-submit">Add</button></td>
             </form>
         </tr>
