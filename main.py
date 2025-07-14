@@ -172,7 +172,7 @@ def signup_post():
         #Salt generated and hashed with the password. Both hash and salt stored in database
         salt = User.GenerateSalt().hex()
         password = User.CreateHash(password, salt)
-        CurrentUser = User('', name, email, password, salt)
+        CurrentUser = User(0, name, email, password, salt)
 
         #Checks if the User is already stored in the database and creates a new user if not
         if User.getUserFromName(CurrentUser.getUserName()) == None:
