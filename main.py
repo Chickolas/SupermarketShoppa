@@ -577,14 +577,14 @@ def categorylist():
     if current_user.getAdmin() == True:
         Catagories = []
         Categories = Category.getCategories(Catagories)
-        CategoryName, Supermarket, URL = None, None, None
+        CategoryID, CategoryName, Supermarket, URL = None, None, None, None
 
         #If a POST is sent a new category is added to the Category Table
         if request.method == 'POST':
             CategoryName = request.form.get('CategoryName')
             Supermarket = request.form.get('Supermarket')
             URL = request.form.get('URL')
-            CurrentCategory = Category(CategoryName, Supermarket, URL)
+            CurrentCategory = Category(CategoryID, CategoryName, Supermarket, URL)
             CurrentCategory.CreateCategory()
 
         #If Get method is sent, The table is updated without the page reloading with the updated values when save is pressed

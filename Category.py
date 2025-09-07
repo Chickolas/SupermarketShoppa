@@ -46,8 +46,8 @@ class Category():
     def CreateCategory(self):
         db = Connect_db()
         connection = db.cursor(buffered=True)
-        Query = "INSERT INTO Category(CategoryName, Supermarket, URL) VALUES (%s, %s, %s)"
-        Values = (self.__CategoryName, self.__Supermarket, self.__URL)
+        Query = "INSERT INTO Category(CategoryID, CategoryName, Supermarket, URL) VALUES (%s, %s, %s, %s)"
+        Values = (self.__CategoryID, self.__CategoryName, self.__Supermarket, self.__URL)
         connection.execute(Query, Values)
         db.commit()
         connection.close()
@@ -66,8 +66,9 @@ class Category():
         # print(self.__CategoryID, self.__CategoryName, self.__Supermarket, self.__URL)
 
         # Compile regex for the tesco price strings - Allows only the numbers to be gotten 
-        price_regex = re.compile(".*PriceText.*")
-        ppi_regex = re.compile(".*Subtext.*")
+        name_regex = re.compile(".*titleLink.*")
+        price_regex = re.compile(".*priceText.*")
+        ppi_regex = re.compile(".*subtext.*")
 
         # Configures the selenium webdriver to chrome and allows manipulations of the oprions before scraping
         options = webdriver.ChromeOptions()
@@ -101,7 +102,7 @@ class Category():
             options.add_argument("--window-size=1920,1080")
             options.add_argument("start-maximized")
             driver = webdriver.Chrome(options=options)
-            driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": 'Mozilla/5.0 (Linux; Android 11; SAMSUNG SM-G973U) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/14.2 Chrome/87.0.4280.141 Mobile Safari/537.36'})
+            driver.execute_cdp_cmd('Network.setUserAgentOverride', {"userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) ""AppleWebKit/605.1.15 (KHTML, like Gecko) ""Version/17.5 Mobile/15E148 Safari/604.1"})
             #Simulates the use of the websites from another device to maske the scraping as a person by overriding the default User agent string to a custom one
             
             driver.get(self.getURL() + "?page=" + str(i))
@@ -120,7 +121,7 @@ class Category():
                     #Using the beautiful soup find function all relevant information is than grabbed from their html elements and standardised in the samme formats
                     image = product.img.get("src")
                     print(image)
-                    name = product.find("a", attrs={"aria-label": True}).get_text(strip=True)
+                    name = product.find("a", name_regex).get_text(strip=True)
                     print(name)
                     price = product.find("p", class_ = price_regex).get_text(strip=True)[1:]
                     print(price)
